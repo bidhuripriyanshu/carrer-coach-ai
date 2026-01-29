@@ -2,10 +2,19 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+if (!process.env.GEMINI_API_KEY) {
+  throw new Error("GEMINI_API_KEY environment variable is not set");
+}
+
+// Initialize the new Google GenAI SDK (v1)
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
+const GEMINI_MODEL = "gemini-2.5-flash";
+
 
 export async function generateQuiz() {
   const { userId } = await auth();
@@ -27,9 +36,9 @@ export async function generateQuiz() {
     } professional${
     user.skills?.length ? ` with expertise in ${user.skills.join(", ")}` : ""
   }.
-    
+
     Each question should be multiple choice with 4 options.
-    
+
     Return the response in this JSON format only, no additional text:
     {
       "questions": [
@@ -44,15 +53,26 @@ export async function generateQuiz() {
   `;
 
   try {
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    const text = response.text();
+    const result = await ai.models.generateContent({
+      model: GEMINI_MODEL,
+      contents: prompt,
+    });
+
+    const text = result.text ?? "";
+    console.log("Raw AI response:", text); // Added logging
     const cleanedText = text.replace(/```(?:json)?\n?/g, "").trim();
+    console.log("Cleaned text:", cleanedText); // Added logging
     const quiz = JSON.parse(cleanedText);
 
     return quiz.questions;
   } catch (error) {
     console.error("Error generating quiz:", error);
+    if (error.message.includes("API_KEY")) {
+      throw new Error("Invalid or missing Gemini API key");
+    }
+    if (error instanceof SyntaxError) {
+      throw new Error("Failed to parse quiz response from AI");
+    }
     throw new Error("Failed to generate quiz questions");
   }
 }
@@ -100,9 +120,12 @@ export async function saveQuizResult(questions, answers, score) {
     `;
 
     try {
-      const tipResult = await model.generateContent(improvementPrompt);
+      const tipResult = await ai.models.generateContent({
+        model: GEMINI_MODEL,
+        contents: improvementPrompt,
+      });
 
-      improvementTip = tipResult.response.text().trim();
+      improvementTip = (tipResult.text ?? "").trim();
       console.log(improvementTip);
     } catch (error) {
       console.error("Error generating improvement tip:", error);
