@@ -47,6 +47,10 @@
     "use-fetch": "^0.0.7",
     "zod": "^3.25.56"
   },
+  "overrides": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.1.7",
