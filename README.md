@@ -1,4 +1,4 @@
-# AI Career Coach
+# AI Carrer Coach
 
 An AI-powered career coaching platform that helps professionals build ATS-optimized resumes, generate cover letters, prepare for interviews, and stay ahead with industry insights—all powered by Google Gemini AI.
 
