@@ -1,3 +1,4 @@
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     serverExternalPackages: [
@@ -7,6 +8,8 @@ const nextConfig = {
         "mammoth",
         "@google/genai",
         "inngest",
+        "bcrypt",
+        "sharp",
     ],
     transpilePackages: ["@uiw/react-md-editor", "@uiw/react-markdown-preview"],
     images: {
@@ -17,9 +20,17 @@ const nextConfig = {
             },
         ],
     },
-    webpack: (config, { isServer }) => {
+    webpack: (config, { isServer, webpack }) => {
         // canvas is a phantom optional dependency of jspdf/html2pdf
         config.resolve.alias.canvas = false;
+
+        // pdf-parse loads test files at module init time — ignore them during bundling
+        config.plugins.push(
+            new webpack.IgnorePlugin({
+                resourceRegExp: /^\.\/test\//,
+                contextRegExp: /pdf-parse/,
+            })
+        );
 
         if (!isServer) {
             config.resolve.fallback = {
@@ -31,6 +42,11 @@ const nextConfig = {
                 child_process: false,
                 pg: false,
                 "pg-native": false,
+                crypto: false,
+                stream: false,
+                os: false,
+                path: false,
+                zlib: false,
             };
         }
 

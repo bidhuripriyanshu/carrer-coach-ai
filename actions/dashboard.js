@@ -5,11 +5,6 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { GoogleGenAI } from "@google/genai";
 
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error("GEMINI_API_KEY environment variable is not set");
-}
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const GEMINI_MODEL = "gemini-2.5-flash";
 
 export const generateAIInsights = async (industry) => {
@@ -33,6 +28,7 @@ export const generateAIInsights = async (industry) => {
           Include at least 5 skills and trends.
         `;
 
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   const result = await ai.models.generateContent({
     model: GEMINI_MODEL,
     contents: prompt,

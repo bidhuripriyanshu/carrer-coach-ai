@@ -4,15 +4,6 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { GoogleGenAI } from "@google/genai";
 
-
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error("GEMINI_API_KEY environment variable is not set");
-}
-
-// Initialize the new Google GenAI SDK (v1)
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
 const GEMINI_MODEL = "gemini-2.5-flash";
 
 
@@ -51,6 +42,7 @@ export async function generateQuiz() {
   `;
 
   try {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const result = await ai.models.generateContent({
       model: GEMINI_MODEL,
       contents: prompt,
@@ -118,6 +110,7 @@ export async function saveQuizResult(questions, answers, score) {
     `;
 
     try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const tipResult = await ai.models.generateContent({
         model: GEMINI_MODEL,
         contents: improvementPrompt,

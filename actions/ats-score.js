@@ -3,11 +3,6 @@
 import { GoogleGenAI } from "@google/genai";
 // import mammoth from "mammoth";
 
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error("GEMINI_API_KEY environment variable is not set");
-}
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const GEMINI_MODEL = "gemini-2.5-flash";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
@@ -89,6 +84,11 @@ Rules:
  * Analyze resume and return ATS score + breakdown. Called when user uploads a file in the square bracket (drop zone).
  */
 export async function analyzeResume(formData) {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY environment variable is not set");
+  }
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
   const file = formData.get("resume");
   if (!file || !(file instanceof File)) {
     throw new Error("Please upload a resume file.");
