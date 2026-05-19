@@ -20,11 +20,7 @@ const ALLOWED_TYPES = [
  * Extract plain text from PDF buffer. Uses dynamic import for Next.js compatibility.
  */
 async function extractTextFromPdf(buffer) {
-  const mod = await import("pdf-parse");
-  const pdfParse = mod.default ?? mod;
-  if (typeof pdfParse !== "function") {
-    throw new Error("PDF parser not available.");
-  }
+  const pdfParse = (await import("pdf-parse")).default;
   const data = await pdfParse(buffer);
   return (data?.text || "").trim();
 }

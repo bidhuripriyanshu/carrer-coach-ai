@@ -5,6 +5,8 @@ const nextConfig = {
         "@prisma/adapter-pg",
         "pdf-parse",
         "mammoth",
+        "@google/genai",
+        "inngest",
     ],
     transpilePackages: ["@uiw/react-md-editor", "@uiw/react-markdown-preview"],
     images: {
