@@ -2,9 +2,7 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { GoogleGenAI } from "@google/genai";
-
-const GEMINI_MODEL = "gemini-2.5-flash";
+import { generateText, isRateLimitError } from "@/lib/groq";
 
 export async function generateCoverLetter(data) {
   const { userId } = await auth();
@@ -41,15 +39,28 @@ export async function generateCoverLetter(data) {
     Format the letter in markdown.
   `;
 
+  // Step 1: Generate content with Groq AI
+  let content = "";
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const result = await ai.models.generateContent({
-      model: GEMINI_MODEL,
-      contents: prompt,
-    });
+    content = await generateText(prompt);
 
-    const content = (result.text ?? "").trim();
+    if (!content) {
+      throw new Error("Groq returned an empty response");
+    }
+  } catch (aiError) {
+    console.error("[Cover Letter] AI generation failed:", aiError.message);
 
+    if (isRateLimitError(aiError)) {
+      throw new Error(
+        "AI service rate limit exceeded. Please check your Groq API usage at https://console.groq.com and try again later."
+      );
+    }
+
+    throw new Error("Failed to generate cover letter. Please try again.");
+  }
+
+  // Step 2: Save to database (separate try/catch so DB errors are distinguishable)
+  try {
     const coverLetter = await db.coverLetter.create({
       data: {
         content,
@@ -62,9 +73,9 @@ export async function generateCoverLetter(data) {
     });
 
     return coverLetter;
-  } catch (error) {
-    console.error("Error generating cover letter:", error.message);
-    throw new Error("Failed to generate cover letter");
+  } catch (dbError) {
+    console.error("[Cover Letter] Database save failed:", dbError.message);
+    throw new Error(`Database error: ${dbError.message}`);
   }
 }
 

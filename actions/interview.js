@@ -2,9 +2,7 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { GoogleGenAI } from "@google/genai";
-
-const GEMINI_MODEL = "gemini-2.5-flash";
+import { cleanJsonResponse, generateText } from "@/lib/groq";
 
 
 export async function generateQuiz() {
@@ -42,23 +40,17 @@ export async function generateQuiz() {
   `;
 
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const result = await ai.models.generateContent({
-      model: GEMINI_MODEL,
-      contents: prompt,
-    });
-
-    const text = result.text ?? "";
-    console.log("Raw AI response:", text); // Added logging
-    const cleanedText = text.replace(/```(?:json)?\n?/g, "").trim();
-    console.log("Cleaned text:", cleanedText); // Added logging
+    const text = await generateText(prompt);
+    console.log("Raw AI response:", text);
+    const cleanedText = cleanJsonResponse(text);
+    console.log("Cleaned text:", cleanedText);
     const quiz = JSON.parse(cleanedText);
 
     return quiz.questions;
   } catch (error) {
     console.error("Error generating quiz:", error);
-    if (error.message.includes("API_KEY")) {
-      throw new Error("Invalid or missing Gemini API key");
+    if (error.message.includes("GROQ_API_KEY")) {
+      throw new Error("Invalid or missing Groq API key");
     }
     if (error instanceof SyntaxError) {
       throw new Error("Failed to parse quiz response from AI");
@@ -110,13 +102,7 @@ export async function saveQuizResult(questions, answers, score) {
     `;
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const tipResult = await ai.models.generateContent({
-        model: GEMINI_MODEL,
-        contents: improvementPrompt,
-      });
-
-      improvementTip = (tipResult.text ?? "").trim();
+      improvementTip = await generateText(improvementPrompt);
       console.log(improvementTip);
     } catch (error) {
       console.error("Error generating improvement tip:", error);
