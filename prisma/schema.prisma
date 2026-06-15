@@ -24,6 +24,7 @@ model User{
   resume Resume?
   coverLetter CoverLetter[]
   atsAnalyses AtsAnalysis[]
+  profileOptimizations ProfileOptimization[]
 
 
 
@@ -77,6 +78,23 @@ model AtsAnalysis {
 
   @@index([userId])
   @@index([userId, createdAt])
+}
+
+model ProfileOptimization {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+
+  platform     String
+  profileLabel String?
+  overallScore Float
+  result       Json
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, platform])
 }
 
  model CoverLetter{

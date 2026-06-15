@@ -10,6 +10,7 @@ import {
   ChevronDown,
   StarsIcon,
   BarChart2,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
@@ -88,6 +89,12 @@ export default async function Header() {
                   <Link href="/ats-score" className="flex items-center gap-2">
                     <BarChart2 className="h-4 w-4" />
                     ATS Score
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/profile-optimize" className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    Profile Optimize
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -24,9 +24,14 @@ export default function PerformanceChart({ assessments }) {
 
   useEffect(() => {
     if (assessments) {
-      const formattedData = assessments.map((assessment) => ({
+      const formattedData = [...assessments].reverse().map((assessment) => ({
         date: format(new Date(assessment.createdAt), "MMM dd"),
-        score: assessment.quizScore,
+        score: assessment.category?.startsWith("AI ")
+          ? (Number(assessment.quizScore) / 10) * 100
+          : assessment.quizScore,
+        label: assessment.category?.startsWith("AI ")
+          ? `${Number(assessment.quizScore).toFixed(1)}/10`
+          : `${assessment.quizScore.toFixed(1)}%`,
       }));
       setChartData(formattedData);
     }
@@ -38,7 +43,7 @@ export default function PerformanceChart({ assessments }) {
         <CardTitle className="gradient-title text-3xl md:text-4xl">
           Performance Trend
         </CardTitle>
-        <CardDescription>Your quiz scores over time</CardDescription>
+        <CardDescription>Your practice scores over time</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
@@ -53,7 +58,7 @@ export default function PerformanceChart({ assessments }) {
                     return (
                       <div className="bg-background border rounded-lg p-2 shadow-md">
                         <p className="text-sm font-medium">
-                          Score: {payload[0].value}%
+                          Score: {payload[0].payload.label ?? `${payload[0].value}%`}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {payload[0].payload.date}

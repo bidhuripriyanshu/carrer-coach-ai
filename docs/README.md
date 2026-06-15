@@ -18,7 +18,8 @@ Product-grade, module-based documentation for the AI Career Coach platform. Use 
 | 7 | **AI Infrastructure** | [modules/07-ai-infrastructure.md](./modules/07-ai-infrastructure.md) | MVP |
 | 8 | **Database & Data Model** | [modules/08-database.md](./modules/08-database.md) | Current |
 | 9 | **Background Jobs (Inngest)** | [modules/09-background-jobs.md](./modules/09-background-jobs.md) | MVP |
-| 10 | **Product Roadmap** | [roadmap/product-roadmap.md](./roadmap/product-roadmap.md) | Planning |
+| 10 | **Profile Optimization** | [modules/10-profile-optimization.md](./modules/10-profile-optimization.md) | MVP |
+| 11 | **Product Roadmap** | [roadmap/product-roadmap.md](./roadmap/product-roadmap.md) | Planning |
 
 ---
 
