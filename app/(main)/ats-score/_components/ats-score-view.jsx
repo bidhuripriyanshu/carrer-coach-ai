@@ -137,7 +137,7 @@ export default function AtsScoreView({ initialHistory = [] }) {
           </Badge>
           <span className="text-sm text-muted-foreground">Applicant Tracking System</span>
         </div>
-        <h1 className="text-5xl font-bold tracking-tight gradient-title md:text-6xl">
+        <h1 className="text-4xl font-bold tracking-tight gradient-title md:text-6xl text-white">
           ATS Resume Score
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl">

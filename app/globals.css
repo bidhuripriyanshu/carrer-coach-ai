@@ -129,12 +129,9 @@
   left:0;
   width:100%;
   height: 100%;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.1) 1px,
-      transparent 1px
-    ),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background:
+    linear-gradient(to right, rgba(139, 92, 246, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
   z-index: -1;
@@ -146,14 +143,23 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, transparent, rgba(0, 0, 0, 0.9));
+  background: radial-gradient(ellipse 80% 80% at 50% -20%, rgba(120, 40, 200, 0.15), transparent);
 }
 @layer utilities{
   .gradient{
-    @apply bg-gradient-to-b from-gray-400 via-gray-200 to-gray-600;
+    @apply bg-gradient-to-r from-violet-600 to-indigo-600;
   }
   .gradient-title{
     @apply font-extrabold tracking-tighter text-transparent bg-clip-text pb-2 pr-2;
+  }
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  .bg-white\/3 {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+  .border-white\/8 {
+    border-color: rgba(255, 255, 255, 0.08);
   }
 }
 .hero-image {

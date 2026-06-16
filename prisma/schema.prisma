@@ -25,6 +25,8 @@ model User{
   coverLetter CoverLetter[]
   atsAnalyses AtsAnalysis[]
   profileOptimizations ProfileOptimization[]
+  jobSearches JobSearch[]
+  feedbacks   Feedback[]
 
 
 
@@ -138,4 +140,51 @@ model IndustryInsight{
   nextUpdate    DateTime  // Scheduled update time
 
   @@index([industry])
+}
+
+model JobSearch {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  // Search inputs
+  resumeText  String   @db.Text
+  targetRole  String
+  techStack   String[]
+  location    String?
+  workMode    String?  // "remote" | "hybrid" | "onsite" | "any"
+  experience  String?  // "fresher" | "junior" | "mid" | "senior" | "lead"
+  industries  String[]
+
+  // AI output — array of StartupResult objects
+  results     Json
+  resultCount Int      @default(0)
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, createdAt])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+
+  // Optional link to a user (null = anonymous)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+
+  // Review content
+  name      String               // Display name
+  role      String?              // e.g. "Software Engineer at Google"
+  rating    Int                  // 1–5 stars
+  category  String               // "general" | "resume" | "interview" | "startup-jobs" | "profile-optimize"
+  message   String   @db.Text   // The actual feedback text
+
+  // Moderation
+  approved  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@index([approved, createdAt])
+  @@index([userId])
 }

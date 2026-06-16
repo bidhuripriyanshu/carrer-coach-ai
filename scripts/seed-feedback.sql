@@ -1,0 +1,8 @@
+INSERT INTO "Feedback" (id, name, role, rating, category, message, approved, "createdAt")
+VALUES
+  (gen_random_uuid()::text, 'Ayesha R.', 'Frontend Engineer at Razorpay', 5, 'resume', 'The AI resume builder saved me hours. My ATS score jumped from 58% to 91% after using the suggestions. Got 3 interview calls within a week!', true, NOW()),
+  (gen_random_uuid()::text, 'Karan M.', 'Product Manager', 5, 'interview', 'The mock interview feature is insanely good. Questions I got in my Flipkart round. Finally cracked a PM role at a Series B startup.', true, NOW() - INTERVAL '1 day'),
+  (gen_random_uuid()::text, 'Priya S.', 'Full-Stack Developer', 5, 'profile-optimize', 'My GitHub profile was a mess. After Profile Optimizer, my README was rewritten and my LinkedIn got 4x more profile views in a month.', true, NOW() - INTERVAL '2 days'),
+  (gen_random_uuid()::text, 'Rohan T.', 'DevOps Engineer', 4, 'startup-jobs', 'Startup Job Finder matched me with companies I never found on LinkedIn. Landed at a 30-person seed-stage startup, exactly the culture I wanted.', true, NOW() - INTERVAL '3 days'),
+  (gen_random_uuid()::text, 'Sneha D.', 'Data Scientist', 5, 'general', 'Switched careers from academia to tech with this platform. The AI coach gave me career paths I had not considered. Life-changing experience.', true, NOW() - INTERVAL '4 days'),
+  (gen_random_uuid()::text, 'Arjun B.', 'SDE-2 at a Y-Combinator startup', 5, 'resume', 'The cover letter AI is incredibly context-aware. Wrote a letter that matched the job description perfectly and felt genuine, not templated at all.', true, NOW() - INTERVAL '5 days');
